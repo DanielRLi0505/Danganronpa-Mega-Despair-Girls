@@ -11,21 +11,19 @@ public class SirenMonokuma : Enemy
     void Start()
     {
         base.Start();
-        currentHealth = maxHealth;
         setContactDamage(1);
         setMaxHealth(1);
         currentHealth = maxHealth;
         setScorePoints(250);
         Komaru = GameObject.FindGameObjectWithTag("Player");
-        despawn();
     }
 
     // Update is called once per frame
     void Update()
     {
-        body2D.velocity = new Vector2(walkingSpeed, 0);
-        changeDirection();
-        
+        body2D.velocity = new Vector2(speed, 0);
+        Invoke("changeDirection", 0.5f);
+        despawn();
     }
 
     void changeDirection()
@@ -40,8 +38,7 @@ public class SirenMonokuma : Enemy
             {
                 setSpeed(-walkingSpeed);
             }
-            Debug.Log(Komaru.transform.position.x - transform.position.x);
-            if (walkingSpeed > 0)
+            if (speed > 0)
             {
                 changeState("monowalkright");
             }

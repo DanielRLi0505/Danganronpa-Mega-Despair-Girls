@@ -40,7 +40,6 @@ public class Enemy : MonoBehaviour
         body2D = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         currentHealth = maxHealth;
-        setContactDamage(1);
     }
 
     // Update is called once per frame
@@ -112,6 +111,7 @@ public class Enemy : MonoBehaviour
             Komaru player = other.GetComponent<Komaru>();
             player.hitSide(transform.position.x > player.transform.position.x);
             player.takeDamage(getContactDamage());
+            Debug.Log("Hit");
         }
         if (other.CompareTag("Danger"))
         {

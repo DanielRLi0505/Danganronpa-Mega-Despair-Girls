@@ -18,8 +18,8 @@ public class Monokuma : Enemy
     {
         base.Start();
         currentHealth = maxHealth;
-        setContactDamage(contactDamage);
-        setMaxHealth(maxHealth);
+        setContactDamage(1);
+        setMaxHealth(1);
         setScorePoints(250);
         setSpeed(walkingSpeed);
     }

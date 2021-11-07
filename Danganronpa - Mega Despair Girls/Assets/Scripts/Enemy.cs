@@ -82,22 +82,33 @@ public class Enemy : MonoBehaviour
         if (freeze)
         {
             freezeEnemy = true;
-            anim.speed = 0;
-            body2Dconstraints = body2D.constraints;
-            body2D.constraints = RigidbodyConstraints2D.FreezeAll;
+            if (anim)
+            {
+                anim.speed = 0;
+            }
+            if (body2D)
+            {
+                body2Dconstraints = body2D.constraints;
+                body2D.constraints = RigidbodyConstraints2D.FreezeAll;
+            }
         }
         else
         {
             freezeEnemy = false;
-            anim.speed = 1;
-            body2D.constraints = body2Dconstraints;
+            if (anim)
+            {
+                anim.speed = 1;
+            }
+            if (body2D)
+            {
+                body2D.constraints = body2Dconstraints;
+            }
         }
     }
 
     public void Defeat()
     {
         StartDefeatAnimation();
-        Messenger.RemoveListener<bool>("Freeze", Freeze);
         Destroy(gameObject);
         GameManager.Instance.AddScorePoints(this.scorePoints);
     }

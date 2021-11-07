@@ -44,11 +44,6 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -56,6 +51,7 @@ public class GameManager : MonoBehaviour
         {
             if (initReadyScreen)
             {
+                //GameObject.FindGameObjectWithTag("Player").SetActive(true);
                 Messenger.Broadcast<bool>("Freeze", true);
                 screenMessageText.alignment = TextAlignmentOptions.Center;
                 screenMessageText.alignment = TextAlignmentOptions.Top;
@@ -67,7 +63,6 @@ public class GameManager : MonoBehaviour
             if (gamePlayerReadyTime < 0)
             {
                 GameObject player = GameObject.FindGameObjectWithTag("Player");
-                player.SetActive(true);
                 Messenger.Broadcast<bool>("Freeze", false);
                 if (player == null)
                 {
@@ -168,7 +163,7 @@ public class GameManager : MonoBehaviour
         gameRestartTime = gameRestartDelay;
         SoundManager.Instance.Stop();
         SoundManager.Instance.StopMusic();
-        BroadcastMessage("Freeze", true);
+        Messenger.Broadcast<bool>("Freeze", true);
         /*GameObject[] explosions = GameObject.FindGameObjectsWithTag("Explosion");
         foreach (GameObject explosion in explosions)
         {

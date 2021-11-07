@@ -740,7 +740,7 @@ public class Komaru : MonoBehaviour
         explodeEffect.name = explodeEffectPrefab.name;
         explodeEffect.transform.position = renderer2D.bounds.center;
         Destroy(explodeEffect, 2f);
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
         SoundManager.Instance.Play(explodeEffectClip);
     }
 
@@ -748,7 +748,8 @@ public class Komaru : MonoBehaviour
     {
         GameManager.Instance.PlayerDefeated();
         Invoke("StartDefeatAnimation", 0.5f);
-        //Destroy(gameObject);
+        Freeze(true);
+        gameObject.SetActive(false);
     }
 
     public void FreezeInput(bool freeze)

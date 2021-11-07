@@ -52,6 +52,7 @@ public class Spawner : MonoBehaviour
                 enemy = Instantiate(enemyPrefab);
                 enemy.name = enemyPrefab.name;
                 enemy.transform.position = transform.position;
+                enemy.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
                 spawn = false;
             }
         }

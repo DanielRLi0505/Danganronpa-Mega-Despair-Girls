@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
 
     TextMeshProUGUI playerScoreText;
     TextMeshProUGUI screenMessageText;
+    public GameObject playerPrefab;
 
     // Start is called before the first frame update
 
@@ -55,20 +56,25 @@ public class GameManager : MonoBehaviour
         {
             if (initReadyScreen)
             {
-                FreezePlayer(true);
-                FreezeEnemies(true);
+                Messenger.Broadcast<bool>("Freeze", true);
                 screenMessageText.alignment = TextAlignmentOptions.Center;
                 screenMessageText.alignment = TextAlignmentOptions.Top;
                 screenMessageText.fontStyle = FontStyles.UpperCase;
-                screenMessageText.fontSize = 24;
                 screenMessageText.text = "\nREADY";
                 initReadyScreen = false;
             }
             gamePlayerReadyTime -= Time.deltaTime;
             if (gamePlayerReadyTime < 0)
             {
-                FreezePlayer(false);
-                FreezeEnemies(false);
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                player.SetActive(true);
+                Messenger.Broadcast<bool>("Freeze", false);
+                if (player == null)
+                {
+                    player = Instantiate(playerPrefab);
+                    player.transform.position = new Vector2(0, Camera.main.transform.position.y + Camera.main.orthographicSize);
+                }
+                //FreezeEnemies(false);
                 TeleportPlayer(true);
                 screenMessageText.text = "";
                 playerReady = false;
@@ -128,7 +134,7 @@ public class GameManager : MonoBehaviour
         playerScore += points;
     }
 
-    void FreezePlayer(bool freeze)
+    /*void FreezePlayer(bool freeze)
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
@@ -145,7 +151,7 @@ public class GameManager : MonoBehaviour
         {
             enemy.GetComponent<Enemy>().FreezeEnemy(freeze);
         }
-    }
+    }*/
 
     void FreezeBullets(bool freeze)
     {
@@ -162,13 +168,7 @@ public class GameManager : MonoBehaviour
         gameRestartTime = gameRestartDelay;
         SoundManager.Instance.Stop();
         SoundManager.Instance.StopMusic();
-        FreezePlayer(true);
-        FreezeEnemies(true);
-        GameObject[] bullets = GameObject.FindGameObjectsWithTag("Bullet");
-        foreach (GameObject bullet in bullets)
-        {
-            Destroy(bullet);
-        }
+        BroadcastMessage("Freeze", true);
         /*GameObject[] explosions = GameObject.FindGameObjectsWithTag("Explosion");
         foreach (GameObject explosion in explosions)
         {

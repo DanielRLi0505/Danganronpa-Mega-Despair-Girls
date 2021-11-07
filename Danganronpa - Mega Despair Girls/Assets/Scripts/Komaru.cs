@@ -72,6 +72,11 @@ public class Komaru : MonoBehaviour
 
     [SerializeField] GameObject explodeEffectPrefab;
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+        Messenger.AddListener<bool>("Freeze", Freeze);
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -334,32 +339,33 @@ public class Komaru : MonoBehaviour
 
     void shoot(string TB)
     {
-        if (TB.Equals("Break"))
+        GameObject bullet;
+        switch(TB)
         {
-            GameObject bullet = (GameObject)Instantiate(bulletRef);
-            bullet.transform.position = new Vector3(transform.position.x + ((float)getFlip() * 20f), transform.position.y + 5f, 1);
-            bullet.GetComponent<Bullet>().setBulletDirection((!this.renderer2D.flipX) ? Vector2.right : Vector2.left);
-            bullet.GetComponent<Bullet>().setBulletSpeed(270f);
-            bullet.GetComponent<Bullet>().shoot();
-            SoundManager.Instance.Play(shootBulletClip);
-        }
-        else if (TB.Equals("Weak"))
-        {
-            GameObject bullet = (GameObject)Instantiate(weakRef);
-            SoundManager.Instance.Play(chargedShotClip);
-            bullet.transform.position = new Vector3(transform.position.x + ((float)getFlip() * 20f), transform.position.y + 5f, 1);
-            bullet.GetComponent<weakChargeBullet>().setBulletDirection((!this.renderer2D.flipX) ? Vector2.right : Vector2.left);
-            bullet.GetComponent<weakChargeBullet>().setBulletSpeed(270f);
-            bullet.GetComponent<weakChargeBullet>().shoot();
-        }
-        else if (TB.Equals("Charged"))
-        {
-            GameObject bullet = (GameObject)Instantiate(chargeRef);
-            //SoundManager.Instance.Play(chargedShotClip);
-            bullet.transform.position = new Vector3(transform.position.x + ((float)getFlip() * 20f), transform.position.y + 5f, 1);
-            bullet.GetComponent<chargedBullet>().setBulletDirection((!this.renderer2D.flipX) ? Vector2.right : Vector2.left);
-            bullet.GetComponent<chargedBullet>().setBulletSpeed(270f);
-            bullet.GetComponent<chargedBullet>().shoot();
+            case "Weak":
+                bullet = (GameObject)Instantiate(weakRef);
+                SoundManager.Instance.Play(chargedShotClip);
+                bullet.transform.position = new Vector3(transform.position.x + ((float)getFlip() * 20f), transform.position.y + 5f, 1);
+                bullet.GetComponent<weakChargeBullet>().setBulletDirection((!this.renderer2D.flipX) ? Vector2.right : Vector2.left);
+                bullet.GetComponent<weakChargeBullet>().setBulletSpeed(270f);
+                bullet.GetComponent<weakChargeBullet>().shoot();
+                break;
+            case "Charged":
+                bullet = (GameObject)Instantiate(chargeRef);
+                //SoundManager.Instance.Play(chargedShotClip);
+                bullet.transform.position = new Vector3(transform.position.x + ((float)getFlip() * 20f), transform.position.y + 5f, 1);
+                bullet.GetComponent<chargedBullet>().setBulletDirection((!this.renderer2D.flipX) ? Vector2.right : Vector2.left);
+                bullet.GetComponent<chargedBullet>().setBulletSpeed(270f);
+                bullet.GetComponent<chargedBullet>().shoot();
+                break;
+            default:
+                bullet = (GameObject)Instantiate(bulletRef);
+                bullet.transform.position = new Vector3(transform.position.x + ((float)getFlip() * 20f), transform.position.y + 5f, 1);
+                bullet.GetComponent<Bullet>().setBulletDirection((!this.renderer2D.flipX) ? Vector2.right : Vector2.left);
+                bullet.GetComponent<Bullet>().setBulletSpeed(270f);
+                bullet.GetComponent<Bullet>().shoot();
+                SoundManager.Instance.Play(shootBulletClip);
+                break;
         }
     }
 
@@ -734,7 +740,7 @@ public class Komaru : MonoBehaviour
         explodeEffect.name = explodeEffectPrefab.name;
         explodeEffect.transform.position = renderer2D.bounds.center;
         Destroy(explodeEffect, 2f);
-        Destroy(gameObject);
+        gameObject.SetActive(false);
         SoundManager.Instance.Play(explodeEffectClip);
     }
 
@@ -750,7 +756,7 @@ public class Komaru : MonoBehaviour
         freezeInput = freeze;
     }
 
-    public void FreezePlayer(bool freeze)
+    public void Freeze(bool freeze)
     {
         freezePlayer = freeze;
         if (freeze)

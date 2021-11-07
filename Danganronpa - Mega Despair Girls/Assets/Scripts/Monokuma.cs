@@ -29,25 +29,28 @@ public class Monokuma : Enemy
     void Update()
     {
         body2D.velocity = new Vector2(speed, 0);
-        Invoke("changeDirection", 0.5f);
         despawn();
 
     }
     void changeDirection()
     {
-        if (Physics2D.OverlapCircle(wallCheck.position, checkRadius, whatIsWall) || Physics2D.OverlapCircle(wallCheck2.position, checkRadius, whatIsWall))
+        
+    }
+
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.collider.CompareTag("Wall"))
         {
             walkingSpeed = -walkingSpeed;
             setSpeed(walkingSpeed);
-            
-        }
-        if (walkingSpeed > 0)
-        {
-            changeState("monowalkright");
-        }
-        else
-        {
-            changeState("monowalk");
+            if (walkingSpeed > 0)
+            {
+                changeState("monowalkright");
+            }
+            else
+            {
+                changeState("monowalk");
+            }
         }
     }
 }

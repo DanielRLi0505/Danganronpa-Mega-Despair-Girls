@@ -32,6 +32,11 @@ public class Enemy : MonoBehaviour
     [SerializeField] AudioClip enemyDamageClip;
     [SerializeField] AudioClip enemyBlockClip;
 
+    private void Awake()
+    {
+        Messenger.AddListener<bool>("Freeze", Freeze);
+    }
+
     // Start is called before the first frame update
     public void Start()
     {
@@ -40,6 +45,7 @@ public class Enemy : MonoBehaviour
         body2D = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         currentHealth = maxHealth;
+        Messenger.AddListener<bool>("Freeze", Freeze);
     }
 
     // Update is called once per frame
@@ -71,7 +77,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void FreezeEnemy(bool freeze)
+    public void Freeze(bool freeze)
     {
         if (freeze)
         {
@@ -91,6 +97,7 @@ public class Enemy : MonoBehaviour
     public void Defeat()
     {
         StartDefeatAnimation();
+        Messenger.RemoveListener<bool>("Freeze", Freeze);
         Destroy(gameObject);
         GameManager.Instance.AddScorePoints(this.scorePoints);
     }
@@ -104,7 +111,7 @@ public class Enemy : MonoBehaviour
 
     }
 
-    public virtual void OnTriggerStay2D(Collider2D other)
+    public void OnTriggerStay2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
